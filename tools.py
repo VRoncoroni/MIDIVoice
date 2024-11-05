@@ -55,6 +55,27 @@ def highpass_filter(data, cutoff=80, fs=RATE, order=5):
     y = lfilter(b, a, data)
     return y
 
+def lowpass_filter(data, cutoff=800, fs=RATE, order=5):
+    """Filtre passe-bas les données audio."""
+
+    # Check types
+    if not isinstance(data, np.ndarray):
+        raise ValueError("[lowpass_filter] ERROR : data must be a numpy.ndarray")
+    if not isinstance(cutoff, int):
+        raise ValueError("[lowpass_filter] ERROR : cutoff must be an int")
+    if not isinstance(fs, int):
+        raise ValueError("[lowpass_filter] ERROR : fs must be an int")
+    if not isinstance(order, int):
+        raise ValueError("[lowpass_filter] ERROR : order must be an int")
+
+    if data is None:
+        raise ValueError("[lowpass_filter] ERROR : data is None")
+
+    nyq = 0.5 * fs  # Fréquence de Nyquist
+    normal_cutoff = cutoff / nyq
+    b, a = butter(order, normal_cutoff, btype='low', analog=False)
+    y = lfilter(b, a, data)
+    return y
 
 if __name__ == "__main__":
     print("This file is not meant to be run.")
@@ -84,5 +105,10 @@ if __name__ == "__main__":
     print("Start testing highpass_filter...")
     try:
         print(highpass_filter(data))
+    except Exception as e:
+        print(e)
+    print("Start testing lowpass_filter...")
+    try:
+        print(lowpass_filter(data))
     except Exception as e:
         print(e)

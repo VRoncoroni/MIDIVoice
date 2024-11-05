@@ -3,7 +3,7 @@ import numpy as np
 
 # Internal imports
 from default_values import RATE, MIN_FREQ, MAX_FREQ
-from tools import highpass_filter
+from tools import highpass_filter, lowpass_filter
 
 def autocorrelation_analyse(data):
 
@@ -11,9 +11,10 @@ def autocorrelation_analyse(data):
     if not isinstance(data, np.ndarray):
         raise ValueError("data must be a numpy.ndarray")
 
-    # Filtrer les basses fréquences
+    # Filtrer les basses fréquences et les hautes fréquences
     try:
         data = highpass_filter(data)
+        # data = lowpass_filter(data)
     except Exception as e:
         print(e)
         print("ERR fft_analyse")
