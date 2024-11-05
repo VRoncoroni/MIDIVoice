@@ -9,7 +9,7 @@ def update_plotAUDIO(
         get_data,
         line,
         line2,
-        nearest_note=440.0,
+        get_nearest_note,
         signal_size=1024,
         duration_output=0.1,
         amplitude_output=0.4
@@ -17,12 +17,12 @@ def update_plotAUDIO(
     """ Met à jour les données du graphique avec les données audio et une onde sinusoïdale. """
     
     
-    # if get_data is not a fonction, raise
+    # Check types
     if not callable(get_data):
         raise ValueError("get_data must be a function")
     # check type of all parameters
-    if not isinstance(nearest_note, float):
-        raise ValueError("nearest_note must be a float")
+    if not callable(get_nearest_note):
+        raise ValueError("get_nearest_note must be a function")
     # signal_size int
     if not isinstance(signal_size, int):
         raise ValueError("signal_size must be an int")
@@ -34,6 +34,7 @@ def update_plotAUDIO(
         raise ValueError("amplitude_output must be a float")
     
     data = get_data()
+    nearest_note = get_nearest_note()
     
     # Normaliser data
     data = normalize(data)
@@ -55,7 +56,7 @@ def update_plotFFT(
     ):
     """Met à jour le graphique avec le spectre FFT des données audio."""
     
-    # if get_data is not a fonction, raise
+    # Check types
     if not callable(get_data):
         raise ValueError("get_data must be a function")
     # check type of all parameters
@@ -82,13 +83,27 @@ def update_plotFFT(
 
 def plot_graph(
         get_data,
-        nearest_note=440.0,
+        get_nearest_note,
         signal_size=1024,
         rate=44100,
         duration_output=0.1,
         amplitude_output=0.4
     ):
     """Crée les graphiques et lance les animations pour les données audio."""
+
+    # Check types
+    if not callable(get_data):
+        raise ValueError("get_data must be a function")
+    if not callable(get_nearest_note):
+        raise ValueError("get_nearest_note must be a function")
+    if not isinstance(signal_size, int):
+        raise ValueError("signal_size must be an int")
+    if not isinstance(rate, int):
+        raise ValueError("rate must be an int")
+    if not isinstance(duration_output, float):
+        raise ValueError("duration_output must be a float")
+    if not isinstance(amplitude_output, float):
+        raise ValueError("amplitude_output must be a float")
     
     # Graph de l'onde sonore
     fig, ax = plt.subplots()
@@ -116,7 +131,7 @@ def plot_graph(
             get_data,
             line,
             line2,
-            nearest_note,
+            get_nearest_note,
             signal_size,
             duration_output,
             amplitude_output
@@ -144,4 +159,9 @@ if __name__ == "__main__":
     data = np.random.randint(-100, 100, 1024)
     def get_data():
         return data
-    plot_graph(get_data=get_data)
+    def get_nearest_note():
+        return 440
+    plot_graph(
+        get_data=get_data,
+        get_nearest_note=get_nearest_note,
+    )

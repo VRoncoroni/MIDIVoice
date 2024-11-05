@@ -1,0 +1,54 @@
+# Fichiers Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.so
+*.pyd
+
+# Environnements virtuels
+venv/
+env/
+.venv/
+ENV/
+.ENV/
+
+# Configurations d'environnement
+.env
+*.env
+.env.*
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Logs et bases de données
+*.log
+*.sqlite3
+*.db
+
+# MacOS
+.DS_Store
+
+# PyInstaller
+dist/
+build/
+*.spec
+
+# Dossiers de cache
+*.egg-info/
+.eggs/
+.installed.cfg
+*.egg
+
+# Dossiers générés par les IDE
+.vscode/
+.idea/
+
+# Fichiers spécifiques à certains outils
+.coverage
+.cache
+.tox/
+.nox/
+.mypy_cache/
+.pytest_cache/
+pytest_cache/
