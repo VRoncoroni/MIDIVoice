@@ -1,96 +1,96 @@
 # MIDIVoice
 
-MIDIVoice est un projet open-source qui permet d'analyser, de visualiser et de générer en live des signaux MIDI à partir de la voix humaine.
+MIDIVoice is an open-source project that enables real-time analysis, visualization, and generation of MIDI signals from the human voice.
 
-## Analyse de la récupération de la fréquence fondamentale avec l'auto-corrélation
+## Analyzing Fundamental Frequency Retrieval with Auto-Correlation
 
-L'analyse de la fréquence fondamentale (F0) d'un signal audio est une tâche essentielle en traitement du signal. Dans ce projet, nous utilisons l'**auto-corrélation** pour extraire la F0 de la voix humaine.
+Analyzing the fundamental frequency (F0) of an audio signal is a crucial task in signal processing. In this project, we use **auto-correlation** to extract the F0 from the human voice.
 
-### 1. Auto-corrélation
+### 1. Auto-Correlation
 
-L'auto-corrélation est une mesure de la similarité entre un signal et une version décalée de lui-même. Mathématiquement, l'auto-corrélation d'un signal $ x[n] $ est définie comme :
+Auto-correlation is a measure of similarity between a signal and a time-shifted version of itself. Mathematically, the auto-correlation of a signal $ x[n] $ is defined as:
 
 $$ R_x[m] = \sum_{n=0}^{N-1} x[n] \cdot x[n-m] $$
 
-où :
+where:
 
-- $ R_x[m] $ est la valeur de l'auto-corrélation pour le décalage $ m $.
-- $ x[n] $ est le signal audio.
-- $ N $ est le nombre total d'échantillons dans le signal.
+- $ R_x[m] $ is the auto-correlation value for the lag $ m $.
+- $ x[n] $ is the audio signal.
+- $ N $ is the total number of samples in the signal.
 
-### 2. Détection de la fréquence fondamentale
+### 2. Detecting the Fundamental Frequency
 
-Pour extraire la fréquence fondamentale $ f_0 $ d'un signal audio, on utilise l'auto-corrélation pour trouver le premier pic significatif de l'auto-corrélation. Ce pic correspond à la période du signal, qui est inversement proportionnelle à la fréquence fondamentale :
+To extract the fundamental frequency $ f_0 $ of an audio signal, we use auto-correlation to find the first significant peak in the auto-correlation. This peak corresponds to the period of the signal, which is inversely proportional to the fundamental frequency:
 
 $$ f_0 = \frac{rate}{m} $$
 
-où :
+where:
 
-- $ \text{rate} $ est le taux d'échantillonnage du signal audio.
-- $ m $ est l'indice du premier pic significatif de l'auto-corrélation.
+- $ \text{rate} $ is the sampling rate of the audio signal.
+- $ m $ is the index of the first significant peak in the auto-correlation.
 
-### 3. Limitations de l'auto-corrélation
+### 3. Limitations of Auto-Correlation
 
-L'auto-corrélation est une méthode simple et efficace pour extraire la fréquence fondamentale d'un signal audio. Cependant, elle peut être sensible à certains artefacts, tels que le bruit, les harmoniques et les formants vocaux. Pour améliorer la robustesse de l'analyse, on peut utiliser des techniques de prétraitement et de post-traitement, comme le lissage, la suppression des harmoniques et la détection de la voix.
+Auto-correlation is a simple and effective method to extract the fundamental frequency of an audio signal. However, it can be sensitive to certain artifacts, such as noise, harmonics, and vocal formants. To improve the robustness of the analysis, preprocessing and post-processing techniques, such as smoothing, harmonic suppression, and voice detection, can be used.
 
-Par exemple nous avons utiliser un filtre passe-haut pour supprimer les fréquences basses et les harmoniques qui peuvent interférer avec la détection de la fréquence fondamentale.
+For example, we applied a high-pass filter to remove low frequencies and harmonics that could interfere with fundamental frequency detection.
 
-## Analyse de la Transformée de Fourier avec NumPy
+## Fourier Transform Analysis with NumPy
 
-Dans cette section, nous expliquons en détail l'utilisation des fonctions `np.fft.fft()` et `np.fft.fftfreq()` pour l'analyse fréquentielle d'un signal audio.
+This section explains the use of `np.fft.fft()` and `np.fft.fftfreq()` functions for frequency analysis of an audio signal.
 
-### 1. Transformée de Fourier discrète avec `np.fft.fft`
+### 1. Discrete Fourier Transform with `np.fft.fft`
 
-La **Transformée de Fourier discrète (DFT)** décompose un signal temporel $ x[n] $ en ses composantes fréquentielles. Mathématiquement, la DFT de $ x[n] $, pour $ n = 0, 1, \ldots, N-1 $, est définie comme :
+The **Discrete Fourier Transform (DFT)** decomposes a time-domain signal $ x[n] $ into its frequency components. Mathematically, the DFT of $ x[n] $, for $ n = 0, 1, \ldots, N-1 $, is defined as:
 
 $$ X[k] = \sum_{n=0}^{N-1} x[n] \cdot e^{-j \frac{2 \pi}{N} k n} $$
 
-où :
-- $ X[k] $ est la composante fréquentielle pour l'indice $ k $ (la fréquence associée).
-- $ N $ est le nombre total d'échantillons dans le signal.
-- $ j $ est l'unité imaginaire ($ j^2 = -1 $).
-- $ e^{-j \frac{2 \pi}{N} k n} $ est une oscillation complexe qui représente chaque fréquence dans le signal.
+where:
+- $ X[k] $ is the frequency component for index $ k $ (the associated frequency).
+- $ N $ is the total number of samples in the signal.
+- $ j $ is the imaginary unit ($ j^2 = -1 $).
+- $ e^{-j \frac{2 \pi}{N} k n} $ is a complex oscillation representing each frequency in the signal.
 
-En Python, cette équation est calculée par `np.fft.fft(audio_signal)`, qui retourne un tableau $ X[k] $ (appelé `fft_spectrum` dans le code).
+In Python, this equation is computed by `np.fft.fft(audio_signal)`, which returns an array $ X[k] $ (referred to as `fft_spectrum` in the code).
 
-#### Interprétation des valeurs dans `fft_spectrum`
+#### Interpreting Values in `fft_spectrum`
 
-Le résultat `fft_spectrum` est un tableau complexe où chaque élément $ X[k] $ contient :
-- La **magnitude** $ |X[k]| $ : l'amplitude de la fréquence correspondant à l'indice $ k $.
-- La **phase** $ \arg(X[k]) $ : le décalage de phase de cette fréquence.
+The result `fft_spectrum` is a complex array where each element $ X[k] $ contains:
+- The **magnitude** $ |X[k]| $: the amplitude of the frequency corresponding to index $ k $.
+- The **phase** $ \arg(X[k]) $: the phase shift of this frequency.
 
-Pour extraire l'amplitude de chaque fréquence, on utilise :
-$$ 	A = |X[k]| = \sqrt{\Re(X[k])^2 + \Im(X[k])^2} $$
-où $ \Re(X[k]) $ et $ \Im(X[k]) $ représentent respectivement la partie réelle et la partie imaginaire de $ X[k] $.
+To extract the amplitude of each frequency, we use:
+$$ A = |X[k]| = \sqrt{\Re(X[k])^2 + \Im(X[k])^2} $$
+where $ \Re(X[k]) $ and $ \Im(X[k]) $ represent the real and imaginary parts of $ X[k] $, respectively.
 
-### 2. Fréquences correspondantes avec `np.fft.fftfreq`
+### 2. Corresponding Frequencies with `np.fft.fftfreq`
 
-Pour savoir quelles fréquences $ f[k] $ sont représentées par chaque indice $ k $ dans `fft_spectrum`, on utilise la fonction `np.fft.fftfreq()`. Cette fonction calcule les fréquences réelles en Hertz (Hz) correspondant aux indices $ k $.
+To find the frequencies $ f[k] $ represented by each index $ k $ in `fft_spectrum`, we use the `np.fft.fftfreq()` function. This function computes the actual frequencies in Hertz (Hz) corresponding to the indices $ k $.
 
-La fréquence associée à chaque indice $ k $ est donnée par :
+The frequency associated with each index $ k $ is given by:
 
-$$ f[k] = \frac{k \cdot 	{rate}}{N} $$
+$$ f[k] = \frac{k \cdot \text{rate}}{N} $$
 
-où :
-- $ f[k] $ est la fréquence associée à l'indice $ k $,
-- $ \text{rate} $ est le taux d'échantillonnage (par exemple, 44100 Hz),
-- $ N $ est la taille du signal (nombre d'échantillons dans `audio_signal`).
+where:
+- $ f[k] $ is the frequency associated with index $ k $,
+- $ \text{rate} $ is the sampling rate (e.g., 44100 Hz),
+- $ N $ is the signal size (number of samples in `audio_signal`).
 
-#### Gamme de fréquences obtenues
+#### Frequency Range Obtained
 
-- Les indices $ k = 0, 1, \ldots, N/2 $ représentent les **fréquences positives**, de 0 Hz jusqu'à la **fréquence de Nyquist** (qui est $ \frac{\text{rate}}{2} $).
-- Les indices $ k = N/2+1, \ldots, N-1 $ représentent les **fréquences négatives** pour assurer la symétrie de la DFT.
+- Indices $ k = 0, 1, \ldots, N/2 $ represent **positive frequencies**, from 0 Hz up to the **Nyquist frequency** (which is $ \frac{\text{rate}}{2} $).
+- Indices $ k = N/2+1, \ldots, N-1 $ represent **negative frequencies** to ensure DFT symmetry.
 
-La fréquence de Nyquist est le maximum théorique que l’on peut représenter sans aliasing et est définie par :
+The Nyquist frequency is the theoretical maximum that can be represented without aliasing and is defined as:
 
 $$ f_{\text{Nyquist}} = \frac{\text{rate}}{2} $$
 
-Dans le cas où `rate = 44100` Hz, la fréquence de Nyquist est de 22050 Hz.
+If `rate = 44100` Hz, the Nyquist frequency is 22050 Hz.
 
-## Gestion MIDI avec `mido` et `loopMIDI`
+## MIDI Management with `mido` and `loopMIDI`
 
-Pour générer des signaux MIDI à partir de la voix humaine, nous utilisons la bibliothèque `mido` pour la gestion des messages MIDI et `loopMIDI` pour créer des ports MIDI virtuels.
+To generate MIDI signals from the human voice, we use the `mido` library for managing MIDI messages and `loopMIDI` to create virtual MIDI ports.
 
-Il faut créer un port MIDI virtuel avec `loopMIDI` pour que le programme puisse envoyer des messages MIDI à d'autres applications. Ensuite, on peut utiliser `mido` pour envoyer des messages MIDI à ce port virtuel.
+A virtual MIDI port must be created with `loopMIDI` so that the program can send MIDI messages to other applications. Then, we can use `mido` to send MIDI messages to this virtual port.
 
-Le port virtuel doit être nommé `MIDIVoice` pour que le programme fonctionne correctement.
+The virtual port must be named `MIDIVoice` for the program to work correctly.
