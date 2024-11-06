@@ -9,29 +9,26 @@ def autocorrelation_analyse(data):
 
     # Check types
     if not isinstance(data, np.ndarray):
-        raise ValueError("data must be a numpy.ndarray")
+        raise ValueError("[autocorrelation_analyse] ERROR : data must be a numpy.ndarray")
 
-    # Filtrer les basses fréquences et les hautes fréquences
+    # Filter the data with a highpass filter and a lowpass filter
     try:
         data = highpass_filter(data)
         # data = lowpass_filter(data)
     except Exception as e:
         print(e)
-        print("ERR fft_analyse")
 
     autocorr = np.correlate(data, data, mode='full')
     autocorr = autocorr[len(autocorr)//2:]
-    freqs = np.fft.rfftfreq(len(data), 1 / RATE)
-    # Filtrer les fréquences hors de la plage vocale
     d = np.diff(autocorr)
-    start = np.where(d > 0)[0][0]  # Ignorer le début jusqu'à la première pente ascendante
+    start = np.where(d > 0)[0][0]
     peak = np.argmax(autocorr[start:]) + start
-    # Trouver la fréquence dominante
+    # Find the fondamental frequency
     fondamental_freq = RATE / peak
     if peak <= 0 or fondamental_freq < MIN_FREQ or fondamental_freq > MAX_FREQ:
         fondamental_freq = 0
     if fondamental_freq == 0:
-        print("Fréquence dominante non trouvée ERR autocorrelation_analyse")
+        print("[autocorrelation_analyse] ERR : Frequency not found")
     return fondamental_freq
 
 if __name__ == "__main__":

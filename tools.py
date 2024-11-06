@@ -3,7 +3,7 @@ from scipy.signal import butter, lfilter
 from default_values import RATE
 
 def normalize(data):
-    """Normalise les données"""
+    """ Normalize Data. """
     if data is None:
         raise ValueError("[normalize] ERROR : data is None")
 
@@ -12,7 +12,7 @@ def normalize(data):
     return data
 
 def find_nearest_note(real_note):
-    """Trouve la note la plus proche de la fréquence donnée."""
+    """ Find the nearest note to the real note. """
     
     #Check type
     if not isinstance(real_note, float):
@@ -27,13 +27,12 @@ def find_nearest_note(real_note):
     if index > len(notes_freq) - 1 and index > len(notes_names) - 1:
         raise ValueError("[find_nearest_note] ERROR : Index out of range")
     nearest = notes_freq[index]
-    nearest_note_name = notes_names[index]
-    print(f"Note la plus proche : {nearest_note_name} ({nearest} Hz)")
+    # nearest_note_name = notes_names[index]
 
     return nearest
 
 def highpass_filter(data, cutoff=80, fs=RATE, order=5):
-    """Filtre passe-haut les données audio."""
+    """ Highpass filter the audio data. """
 
     # Check types
     if not isinstance(data, np.ndarray):
@@ -44,18 +43,17 @@ def highpass_filter(data, cutoff=80, fs=RATE, order=5):
         raise ValueError("[highpass_filter] ERROR : fs must be an int")
     if not isinstance(order, int):
         raise ValueError("[highpass_filter] ERROR : order must be an int")
+    if not isinstance(data, np.ndarray):
+        raise ValueError("[highpass_filter] ERROR : data must be a numpy.ndarray")
 
-    if data is None:
-        raise ValueError("[highpass_filter] ERROR : data is None")
-
-    nyq = 0.5 * fs  # Fréquence de Nyquist
+    nyq = 0.5 * fs
     normal_cutoff = cutoff / nyq
     b, a = butter(order, normal_cutoff, btype='high', analog=False)
     y = lfilter(b, a, data)
     return y
 
 def lowpass_filter(data, cutoff=800, fs=RATE, order=5):
-    """Filtre passe-bas les données audio."""
+    """ Lowpass filter the audio data. """
 
     # Check types
     if not isinstance(data, np.ndarray):
@@ -70,7 +68,7 @@ def lowpass_filter(data, cutoff=800, fs=RATE, order=5):
     if data is None:
         raise ValueError("[lowpass_filter] ERROR : data is None")
 
-    nyq = 0.5 * fs  # Fréquence de Nyquist
+    nyq = 0.5 * fs
     normal_cutoff = cutoff / nyq
     b, a = butter(order, normal_cutoff, btype='low', analog=False)
     y = lfilter(b, a, data)
@@ -78,7 +76,7 @@ def lowpass_filter(data, cutoff=800, fs=RATE, order=5):
 
 def freq_to_midi(frequency):
     if frequency <= 0:
-        raise ValueError("La fréquence doit être positive et non nulle.")
+        raise ValueError("[freq_to_midi] ERROR : The frequency must be positive.")
     return round(69 + 12 * np.log2(frequency / 440))
 
 if __name__ == "__main__":

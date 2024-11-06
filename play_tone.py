@@ -6,19 +6,19 @@ import sounddevice as sd
 from default_values import RATE, DURATION_OUTPUT, AMPLITUDE_OUTPUT
 
 def play_tone(get_nearest_note, get_playing, rate=RATE, duration_output=DURATION_OUTPUT, amplitude_output=AMPLITUDE_OUTPUT):
-    """Joue une onde sinusoïdale à la fréquence de la note la plus proche."""
+    """ Play a tone with the given frequency. """
 
     # Check types
     if not callable(get_nearest_note):
-        raise ValueError("get_nearest_note must be a function")
+        raise ValueError("[play_tone] ERROR : get_nearest_note must be a function")
     if not callable(get_playing):
-        raise ValueError("get_playing must be a function")
+        raise ValueError("[play_tone] ERROR : get_playing must be a function")
     if not isinstance(rate, int):
-        raise ValueError("rate must be an int")
+        raise ValueError("[play_tone] ERROR : rate must be an int")
     if not isinstance(duration_output, float):
-        raise ValueError("duration_output must be a float")
+        raise ValueError("[play_tone] ERROR : duration_output must be a float")
     if not isinstance(amplitude_output, float):
-        raise ValueError("amplitude_output must be a float")
+        raise ValueError("[play_tone] ERROR : amplitude_output must be a float")
 
     t = np.linspace(0, duration_output, int(rate*duration_output), endpoint=False)
     with sd.OutputStream(samplerate=rate, channels=1) as stream_output:
@@ -30,7 +30,7 @@ def play_tone(get_nearest_note, get_playing, rate=RATE, duration_output=DURATION
             playing = get_playing()
             nearest_note = get_nearest_note()
             if nearest_note != current_frequency:
-                print(f"Changement de note : {current_frequency} Hz -> {nearest_note} Hz")
+                print(f"Note change : {current_frequency} Hz -> {nearest_note} Hz")
                 current_frequency = nearest_note
                 wave = amplitude_output * np.sin(2 * np.pi * current_frequency * t)
             stream_output.write(wave.astype(np.float32))

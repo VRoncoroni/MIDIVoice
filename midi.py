@@ -5,31 +5,33 @@ import time
 
 # Internal imports
 from tools import freq_to_midi
+from default_values import TIME_SLEEP, DEFAULT_MIDI_VELOCITY
 
-def play_midi_note(midi_out, freq, velocity=127):
-    """Joue une note MIDI."""
+def play_midi_note(midi_out, freq, velocity=DEFAULT_MIDI_VELOCITY):
+    """ Play a MIDI note. """
     note = freq_to_midi(freq)
     midi_out.send(Message('note_on', note=note, velocity=velocity))
 
 def stop_midi_note(midi_out, freq):
-    """Arrête une note MIDI."""
+    """ Stop a MIDI note. """
     note = freq_to_midi(freq)
     midi_out.send(Message('note_off', note=note))
 
 def freq_manager(midi_out, get_nearest_note, get_playing):
-    """Gère les fréquences et les notes MIDI."""
+    """ Manage the frequency to play. """
     current_freq = 0
     playing = get_playing()
     while playing:
         nearest_note = get_nearest_note()
         playing = get_playing()
         if nearest_note != current_freq:
+            print(f"Note change : {current_freq} Hz -> {nearest_note} Hz")
             if nearest_note != 0:
                 play_midi_note(midi_out, nearest_note)
             if current_freq != 0:
                 stop_midi_note(midi_out, current_freq)
             current_freq = nearest_note
-        time.sleep(0.1)
+        time.sleep(TIME_SLEEP)
 
 
 if __name__ == "__main__":
@@ -39,9 +41,9 @@ if __name__ == "__main__":
     midi_ports = mido.get_output_names()
     midi_port_name = next((port for port in midi_ports if "MIDIVoice" in port), None)
     if midi_port_name is None:
-        raise ValueError("Port MIDI contenant 'MIDIVoice' non trouvé")
+        raise ValueError("[MIDI MAIN] ERROR : Port MIDI 'MIDIVoice' not found")
     else:
-        print(f"Connexion au port MIDI : {midi_port_name}")
+        print(f"Port MIDI : {midi_port_name} found")
         midi_out = mido.open_output(midi_port_name)
     
     print("Playing a note...")
