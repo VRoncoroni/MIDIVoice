@@ -2,6 +2,21 @@
 
 MIDIVoice is an open-source project that enables real-time analysis, visualization, and generation of MIDI signals from the human voice.
 
+Libray used:
+- `numpy`
+- `matplotlib`
+- `sounddevice`
+- `mido`
+- `loopMIDI`
+- `pyaudio`
+- `threading`
+- `time`
+- `scipy`
+
+Software used:
+- `Python 3.10.6`
+- [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html)
+
 ## Analyzing Fundamental Frequency Retrieval with Auto-Correlation
 
 Analyzing the fundamental frequency (F0) of an audio signal is a crucial task in signal processing. In this project, we use **auto-correlation** to extract the F0 from the human voice.
