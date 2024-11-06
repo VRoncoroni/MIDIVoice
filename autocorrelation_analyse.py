@@ -3,7 +3,7 @@ import numpy as np
 
 # Internal imports
 from default_values import RATE, MIN_FREQ, MAX_FREQ
-from tools import highpass_filter, lowpass_filter
+from tools import highpass_filter
 
 def autocorrelation_analyse(data):
 

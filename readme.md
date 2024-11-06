@@ -86,3 +86,11 @@ La fréquence de Nyquist est le maximum théorique que l’on peut représenter 
 $$ f_{\text{Nyquist}} = \frac{\text{rate}}{2} $$
 
 Dans le cas où `rate = 44100` Hz, la fréquence de Nyquist est de 22050 Hz.
+
+## Gestion MIDI avec `mido` et `loopMIDI`
+
+Pour générer des signaux MIDI à partir de la voix humaine, nous utilisons la bibliothèque `mido` pour la gestion des messages MIDI et `loopMIDI` pour créer des ports MIDI virtuels.
+
+Il faut créer un port MIDI virtuel avec `loopMIDI` pour que le programme puisse envoyer des messages MIDI à d'autres applications. Ensuite, on peut utiliser `mido` pour envoyer des messages MIDI à ce port virtuel.
+
+Le port virtuel doit être nommé `MIDIVoice` pour que le programme fonctionne correctement.

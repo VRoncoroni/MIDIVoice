@@ -4,7 +4,7 @@ RATE = 44100
 DURATION_OUTPUT = 0.1
 AMPLITUDE_OUTPUT = 0.6
 MIN_FREQ = 80
-MAX_FREQ = 800
+MAX_FREQ = 2000
 SIGNAL_SIZE = 1024
 # Type d'analyse de fréquence (fft ou autocorrelation)
 ANALYSE_TYPE = {

@@ -1,5 +1,8 @@
+# External imports
 import numpy as np
 import sounddevice as sd
+
+# Internal imports
 from default_values import RATE, DURATION_OUTPUT, AMPLITUDE_OUTPUT
 
 def play_tone(get_nearest_note, get_playing, rate=RATE, duration_output=DURATION_OUTPUT, amplitude_output=AMPLITUDE_OUTPUT):
